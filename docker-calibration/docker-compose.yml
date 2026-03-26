@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: calibration-system
+    ports:
+      - "8080:80"
+    volumes:
+      - ./logs:/var/www/html/logs
+      - ./data:/var/www/html/data
+    environment:
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+      - PHP_INI_DATE.timezone=Europe/Moscow
+    restart: unless-stopped
+    networks:
+      - calibration-network
+
+  # Опционально: база данных для хранения результатов
+  db:
+    image: mysql:8.0
+    container_name: calibration-db
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: calibration_root
+      MYSQL_DATABASE: calibration
+      MYSQL_USER: calibration_user
+      MYSQL_PASSWORD: calibration_pass
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./config/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+    networks:
+      - calibration-network
+    depends_on:
+      - app
+
+volumes:
+  db_data:
+    driver: local
+
+networks:
+  calibration-network:
+    driver: bridge
