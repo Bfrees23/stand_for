@@ -12,6 +12,21 @@ services:
       - ./src:/var/www/html
       - ./logs:/var/www/html/logs
       - ./data:/var/www/html/data
+    # Проброс последовательных портов с хоста в контейнер для прямого доступа к оборудованию
+    devices:
+      - "/dev/ttyUSB0:/dev/ttyUSB0"
+      - "/dev/ttyUSB1:/dev/ttyUSB1"
+      - "/dev/ttyUSB2:/dev/ttyUSB2"
+      - "/dev/ttyUSB3:/dev/ttyUSB3"
+      - "/dev/ttyS0:/dev/ttyS0"
+      - "/dev/ttyS1:/dev/ttyS1"
+    # Запуск от root для доступа к устройствам, затем переключение прав
+    user: "root"
+    command: >
+      sh -c "
+      chmod 666 /dev/ttyUSB* /dev/ttyS* 2>/dev/null || true &&
+      chown www-data:www-data /var/www/html &&
+      apache2-foreground"
     environment:
       - APACHE_RUN_USER=www-data
       - APACHE_RUN_GROUP=www-data
