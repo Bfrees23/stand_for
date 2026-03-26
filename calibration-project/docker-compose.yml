@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    container_name: calibration-system
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./logs:/var/www/html/logs
+      - ./data:/var/www/html/data
+    environment:
+      - APACHE_RUN_USER=www-data
+      - APACHE_RUN_GROUP=www-data
+      - PHP_MEMORY_LIMIT=512M
+      - PHP_MAX_EXECUTION_TIME=300
+    restart: unless-stopped
+    networks:
+      - calibration-network
+
+  # Optional: MySQL database for persistent storage
+  db:
+    image: mysql:8.0
+    container_name: calibration-db
+    environment:
+      MYSQL_ROOT_PASSWORD: calibration_root_password
+      MYSQL_DATABASE: calibration_db
+      MYSQL_USER: calibration_user
+      MYSQL_PASSWORD: calibration_password
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "3306:3306"
+    networks:
+      - calibration-network
+    restart: unless-stopped
+
+networks:
+  calibration-network:
+    driver: bridge
+
+volumes:
+  db_data:

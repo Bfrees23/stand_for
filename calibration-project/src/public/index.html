@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система Калибровки Корректоров</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo">
+                <h1>🔧 Система Калибровки</h1>
+            </div>
+            <div class="session-info" id="sessionInfo">
+                <span class="operator-name">Оператор: <strong id="operatorName">Гость</strong></span>
+                <span class="session-status" id="sessionStatus">Нет активной сессии</span>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Step Indicator -->
+            <div class="wizard-steps" id="wizardSteps">
+                <div class="step" data-step="0">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Настройки</div>
+                    <div class="step-status">active</div>
+                </div>
+                <div class="step" data-step="1">
+                    <div class="step-number">2</div>
+                    <div class="step-title">Температура</div>
+                    <div class="step-status">pending</div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-number">3</div>
+                    <div class="step-title">Импульсы</div>
+                    <div class="step-status">pending</div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Давление</div>
+                    <div class="step-status">pending</div>
+                </div>
+                <div class="step" data-step="4">
+                    <div class="step-number">5</div>
+                    <div class="step-title">Отчет</div>
+                    <div class="step-status">pending</div>
+                </div>
+            </div>
+
+            <!-- Step 0: Settings -->
+            <section class="wizard-step active" id="step0">
+                <h2>Настройки стенда</h2>
+                
+                <div class="settings-grid">
+                    <!-- Corrector Settings -->
+                    <div class="settings-card">
+                        <h3>📟 Корректор</h3>
+                        <div class="form-group">
+                            <label for="correctorComPort">COM-порт:</label>
+                            <select id="correctorComPort">
+                                <option value="COM1">COM1</option>
+                                <option value="COM2">COM2</option>
+                                <option value="COM3">COM3</option>
+                                <option value="COM4">COM4</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="correctorBaudRate">Скорость (бод):</label>
+                            <select id="correctorBaudRate">
+                                <option value="9600">9600</option>
+                                <option value="19200" selected>19200</option>
+                                <option value="38400">38400</option>
+                                <option value="115200">115200</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="correctorParity">Четность:</label>
+                            <select id="correctorParity">
+                                <option value="None" selected>None</option>
+                                <option value="Even">Even</option>
+                                <option value="Odd">Odd</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pressureUnit">Единицы давления:</label>
+                            <select id="pressureUnit">
+                                <option value="kPa" selected>кПа</option>
+                                <option value="bar">бар</option>
+                                <option value="psi">psi</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-secondary test-device-btn" data-device="corrector">
+                            Проверить связь
+                        </button>
+                        <div class="device-status" id="correctorStatus">
+                            <span class="status-indicator"></span>
+                            <span class="status-text">Не проверено</span>
+                        </div>
+                    </div>
+
+                    <!-- MIT-8 Settings -->
+                    <div class="settings-card">
+                        <h3>🌡️ Термоизмерители (МИТ-8)</h3>
+                        <div class="form-group">
+                            <label for="mit8ComPort">COM-порт:</label>
+                            <select id="mit8ComPort">
+                                <option value="COM1">COM1</option>
+                                <option value="COM2">COM2</option>
+                                <option value="COM3">COM3</option>
+                                <option value="COM4">COM4</option>
+                            </select>
+                        </div>
+                        
+                        <div class="channel-config">
+                            <h4>Каналы и уставки:</h4>
+                            <div class="channel-item">
+                                <label>Канал 1:</label>
+                                <select id="mit8Channel1">
+                                    <option value="-40">-40°C</option>
+                                    <option value="10">+10°C</option>
+                                    <option value="60">+60°C</option>
+                                </select>
+                            </div>
+                            <div class="channel-item">
+                                <label>Канал 2:</label>
+                                <select id="mit8Channel2">
+                                    <option value="-40">-40°C</option>
+                                    <option value="10" selected>+10°C</option>
+                                    <option value="60">+60°C</option>
+                                </select>
+                            </div>
+                            <div class="channel-item">
+                                <label>Канал 3:</label>
+                                <select id="mit8Channel3">
+                                    <option value="-40">-40°C</option>
+                                    <option value="10">+10°C</option>
+                                    <option value="60" selected>+60°C</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary test-device-btn" data-device="mit8">
+                            Проверить связь
+                        </button>
+                        <div class="device-status" id="mit8Status">
+                            <span class="status-indicator"></span>
+                            <span class="status-text">Не проверено</span>
+                        </div>
+                    </div>
+
+                    <!-- Pressure Calibrator Settings -->
+                    <div class="settings-card">
+                        <h3>💨 Калибратор давления</h3>
+                        <div class="form-group">
+                            <label for="pressureType">Тип датчика:</label>
+                            <select id="pressureType">
+                                <option value="absolute" selected>Абсолютный</option>
+                                <option value="differential">Перепад</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="pressureRangeMin">Мин. диапазон (кПа):</label>
+                            <input type="number" id="pressureRangeMin" value="0" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label for="pressureRangeMax">Макс. диапазон (кПа):</label>
+                            <input type="number" id="pressureRangeMax" value="1000" min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Количество точек:</label>
+                            <div id="pressurePointsInfo" class="info-text">
+                                Абсолютный: 5 точек (0%, 25%, 50%, 75%, 100%)
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary test-device-btn" data-device="pressure">
+                            Проверить связь
+                        </button>
+                        <div class="device-status" id="pressureStatus">
+                            <span class="status-indicator"></span>
+                            <span class="status-text">Не проверено</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Corrector Info -->
+                <div class="corrector-info-section">
+                    <h3>ℹ️ Информация о корректоре</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="correctorSerial">Серийный номер:</label>
+                            <input type="text" id="correctorSerial" placeholder="Введите серийный номер">
+                        </div>
+                        <div class="form-group">
+                            <label for="correctorModel">Модель:</label>
+                            <input type="text" id="correctorModel" placeholder="Введите модель">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-primary" id="startCalibrationBtn" disabled>
+                        Начать калибровку
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 1: Temperature Calibration -->
+            <section class="wizard-step" id="step1">
+                <h2>Калибровка температуры</h2>
+                
+                <div class="temp-calibration-container">
+                    <!-- Current Step Instruction -->
+                    <div class="instruction-panel" id="tempInstruction">
+                        <h3>Шаг 1: Калибровка точки -40°C</h3>
+                        <div class="instruction-content">
+                            <p class="instruction-text">
+                                Поместите датчик корректора и термопару МИТ-8 в камеру с температурой -40°C.
+                                Убедитесь, что Элемер М90 с уставкой -40 подключен и стабилизирован.
+                            </p>
+                            <div class="temperature-display">
+                                <div class="current-temp">
+                                    <span class="temp-label">Текущая температура:</span>
+                                    <span class="temp-value" id="currentTempValue">--.-°C</span>
+                                </div>
+                                <div class="stabilization-timer">
+                                    <span class="timer-label">Стабилизация:</span>
+                                    <span class="timer-value" id="stabilizationTimer">00:00 / 05:00</span>
+                                </div>
+                            </div>
+                            <div class="temp-graph" id="tempGraph">
+                                <!-- Graph will be rendered here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Temperature Points Status -->
+                    <div class="temp-points-status">
+                        <div class="temp-point" data-point="-40">
+                            <div class="point-indicator"></div>
+                            <div class="point-info">
+                                <span class="point-temp">-40°C</span>
+                                <span class="point-status">Ожидание</span>
+                            </div>
+                        </div>
+                        <div class="temp-point" data-point="60">
+                            <div class="point-indicator"></div>
+                            <div class="point-info">
+                                <span class="point-temp">+60°C</span>
+                                <span class="point-status">Ожидание</span>
+                            </div>
+                        </div>
+                        <div class="temp-point" data-point="10">
+                            <div class="point-indicator"></div>
+                            <div class="point-info">
+                                <span class="point-temp">+10°C</span>
+                                <span class="point-status">Ожидание</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="big-action-button">
+                        <button class="btn btn-large btn-primary" id="writeTempPointBtn" disabled>
+                            Записать точку <span id="writeTempPointValue">-40</span>°C
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Impulse Check -->
+            <section class="wizard-step" id="step2">
+                <h2>Проверка импульсов</h2>
+                
+                <div class="impulse-check-container">
+                    <div class="impulse-instruction">
+                        <h3>Подайте 20 импульсов на корректор</h3>
+                        <p>После каждого успешного импульса нажимайте кнопку "Зафиксировать импульс"</p>
+                    </div>
+
+                    <div class="impulse-progress">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="impulseProgressFill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-text">
+                            Импульсы: <span id="impulseCount">0</span> / 20
+                        </div>
+                    </div>
+
+                    <div class="impulse-list" id="impulseList">
+                        <!-- Impulses will be added here -->
+                    </div>
+
+                    <div class="big-action-button">
+                        <button class="btn btn-large btn-success" id="recordImpulseBtn">
+                            ✓ Зафиксировать импульс №<span id="nextImpulseNum">1</span>
+                        </button>
+                    </div>
+
+                    <button class="btn btn-primary" id="completeImpulsesBtn" disabled style="margin-top: 20px;">
+                        Продолжить →
+                    </button>
+                </div>
+            </section>
+
+            <!-- Step 3: Pressure Check -->
+            <section class="wizard-step" id="step3">
+                <h2>Проверка датчиков давления</h2>
+                
+                <div class="pressure-check-container">
+                    <div class="pressure-mode-selector">
+                        <span class="mode-label">Режим:</span>
+                        <span class="mode-value" id="pressureModeDisplay">Абсолютный (5 точек)</span>
+                    </div>
+
+                    <div class="pressure-points-grid" id="pressurePointsGrid">
+                        <!-- Pressure point cards will be generated here -->
+                    </div>
+
+                    <div class="current-pressure-point" id="currentPressurePoint">
+                        <h3>Точка <span id="currentPressurePointNum">1</span> из <span id="totalPressurePoints">5</span></h3>
+                        <div class="pressure-target">
+                            Установите давление: <strong id="targetPressureValue">0.00 кПа</strong>
+                        </div>
+                        
+                        <div class="pressure-actions">
+                            <button class="btn btn-large btn-primary" id="readPressureBtn">
+                                📖 Считать данные с корректора
+                            </button>
+                            <button class="btn btn-secondary" id="retryPressureBtn" style="display: none;">
+                                🔄 Повторить точку
+                            </button>
+                        </div>
+
+                        <div class="pressure-result" id="pressureResult" style="display: none;">
+                            <div class="result-row">
+                                <span>Показание корректора:</span>
+                                <span id="correctorPressureValue">--.-- кПа</span>
+                            </div>
+                            <div class="result-row">
+                                <span>Погрешность:</span>
+                                <span id="pressureErrorValue">--.-- кПа</span>
+                            </div>
+                            <div class="result-row result-verdict">
+                                <span>Результат:</span>
+                                <span id="pressureVerdict" class="verdict-badge">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Final Report -->
+            <section class="wizard-step" id="step4">
+                <h2>Итоговый отчет</h2>
+                
+                <div class="report-container">
+                    <div class="report-header">
+                        <h3>Протокол калибровки</h3>
+                        <div class="report-meta">
+                            <div class="meta-item">
+                                <span class="meta-label">Дата:</span>
+                                <span class="meta-value" id="reportDate">--.--.----</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Время:</span>
+                                <span class="meta-value" id="reportTime">--:--:--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">ID сессии:</span>
+                                <span class="meta-value" id="reportSessionId">--</span>
+                            </div>
+                            <div class="meta-item">
+                                <span class="meta-label">Серийный номер:</span>
+                                <span class="meta-value" id="reportSerialNumber">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Temperature Results -->
+                    <div class="report-section">
+                        <h4>📊 Результаты калибровки температуры</h4>
+                        <table class="report-table" id="tempCalibrationTable">
+                            <thead>
+                                <tr>
+                                    <th>Точка</th>
+                                    <th>Эталон (МИТ-8)</th>
+                                    <th>Корректор</th>
+                                    <th>Погрешность</th>
+                                    <th>Статус</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Temperature Verification -->
+                    <div class="report-section">
+                        <h4>✅ Результаты поверки температуры</h4>
+                        <table class="report-table" id="tempVerificationTable">
+                            <thead>
+                                <tr>
+                                    <th>Среда</th>
+                                    <th>Эталон (МИТ-8)</th>
+                                    <th>Корректор</th>
+                                    <th>Погрешность</th>
+                                    <th>Результат</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Impulse Results -->
+                    <div class="report-section">
+                        <h4>⚡ Результаты проверки импульсов</h4>
+                        <div class="impulse-summary">
+                            Зафиксировано импульсов: <strong id="impulseSummaryCount">0/20</strong>
+                            <span class="impulse-verdict" id="impulseVerdict">--</span>
+                        </div>
+                    </div>
+
+                    <!-- Pressure Results -->
+                    <div class="report-section">
+                        <h4>💨 Результаты проверки давления</h4>
+                        <table class="report-table" id="pressureResultsTable">
+                            <thead>
+                                <tr>
+                                    <th>Точка</th>
+                                    <th>Заданное</th>
+                                    <th>Показание</th>
+                                    <th>Погрешность</th>
+                                    <th>Попытки</th>
+                                    <th>Вердикт</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Will be populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Final Verdict -->
+                    <div class="final-verdict" id="finalVerdict">
+                        <h3>Общий результат:</h3>
+                        <span class="verdict-badge verdict-large" id="finalVerdictBadge">--</span>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="report-actions">
+                        <button class="btn btn-primary" id="exportPdfBtn">
+                            📄 Экспорт в PDF
+                        </button>
+                        <button class="btn btn-success" id="saveToDbBtn">
+                            💾 Сохранить в БД
+                        </button>
+                        <button class="btn btn-secondary" id="startNewBtn">
+                            🔄 Начать заново
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Timeout Warning Modal -->
+        <div class="modal" id="timeoutModal" style="display: none;">
+            <div class="modal-content">
+                <h3>⚠️ Предупреждение о таймауте</h3>
+                <p>На текущем этапе нет прогресса более 15 минут.</p>
+                <p>Хотите приостановить процесс?</p>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" id="continueBtn">Продолжить</button>
+                    <button class="btn btn-secondary" id="pauseBtn">Приостановить</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logs Panel -->
+        <aside class="logs-panel" id="logsPanel">
+            <h4>📋 Журнал действий</h4>
+            <div class="logs-list" id="logsList">
+                <!-- Logs will be added here -->
+            </div>
+        </aside>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+</html>
