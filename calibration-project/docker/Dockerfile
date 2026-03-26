@@ -1,6 +1,6 @@
 FROM php:8.2-apache
 
-# Install extensions
+# Install extensions and serial port tools
 RUN apt-get update && apt-get install -y \
     libpng-dev \
     libjpeg-dev \
@@ -8,6 +8,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
+    setserial \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd mysqli pdo pdo_mysql \
     && a2enmod rewrite headers
@@ -18,9 +19,10 @@ WORKDIR /var/www/html
 # Copy application files
 COPY src/ /var/www/html/
 
-# Set permissions
+# Set permissions for serial ports and application
 RUN chown -R www-data:www-data /var/www/html \
-    && chmod -R 755 /var/www/html
+    && chmod -R 755 /var/www/html \
+    && usermod -a -G dialout www-data
 
 # Apache configuration
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
