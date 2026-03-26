@@ -9,10 +9,6 @@ define('DB_NAME', getenv('DB_NAME') ?: 'calibration');
 define('DB_USER', getenv('DB_USER') ?: 'calibration_user');
 define('DB_PASS', getenv('DB_PASS') ?: 'calibration_pass');
 
-// Настройки сессии
-ini_set('session.gc_maxlifetime', 3600); // 1 час
-ini_set('session.cookie_lifetime', 3600);
-
 // Таймауты (в секундах)
 define('STABILIZATION_TIMEOUT', 900); // 15 минут
 define('TEMP_STABILIZATION_TIME', 300); // 5 минут для стабилизации температуры
