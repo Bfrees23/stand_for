@@ -1,12 +1,1 @@
-#-------------------------
-# Environment Files
-#-------------------------
-.env
-
-docker/nginx/logs/*
-!docker/nginx/logs/.gitkeep
-
-docker/promtail/data/*
-!docker/promtail/data/.gitkeep
-
-старые скрипты/
+Nothing should be ignored based on the provided file changes, as they only include source files (.html, .php, .js) without any build artifacts, dependencies, or temporary files.
