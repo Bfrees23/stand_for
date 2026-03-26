@@ -1,0 +1,5 @@
+0000000000000000000000000000000000000000 eb3850923aabc44875a8f91188d6e3c45e1f57ab user <user@KB1-20.tehnomer.arz> 1774423253 +0300	clone: from https://gitverse.ru/Bfrees/Stand_for_korrektors.git
+eb3850923aabc44875a8f91188d6e3c45e1f57ab f086f4cb9ddeb3db21f0db4610e58b105ab1d4ed Bfees <dimonciksamrinskij751@gmail.com> 1774423779 +0300	commit: base project + idea index.php
+f086f4cb9ddeb3db21f0db4610e58b105ab1d4ed 888a44721029594ef3c47dee087b4f2d6dcea96c Bfees <dimonciksamrinskij751@gmail.com> 1774423943 +0300	commit: заглушка api.php
+888a44721029594ef3c47dee087b4f2d6dcea96c 88b44f89ce9f346fab9edcf8338e4908f369fd5c Bfees <dimonciksamrinskij751@gmail.com> 1774426853 +0300	commit: перерисовка инта но все еще на заглушках
+88b44f89ce9f346fab9edcf8338e4908f369fd5c 3bc4c4aa07d5814cfc610707d6083c2b6b567d7d Bfees <dimonciksamrinskij751@gmail.com> 1774427087 +0300	commit: уставка appstarter и обновление readme

@@ -1,0 +1,73 @@
+# Для down
+# --rmi all → удалить все образы, которые использовались сервисами (и те, что были собраны локально, и те, что подтянуты из registry).
+# --rmi local → удалить только локально собранные образы (те, что были созданы через build: в docker-compose.yml). Образы, скачанные из Docker Hub или другого registry, останутся.
+# -v (или --volumes) → Дополнительно удаляет анонимные тома, которые были примонтированы к этим контейнерам.
+# --rmi all --volumes → Удаляет контейнеры, сети, все образы и все тома (включая именованные). Это «жёсткий reset» проекта
+
+# Для build
+# --no-cache → пересобирает образы с нуля, игнорируя кэш.
+
+# Для up
+# --build → пересобрать образы перед запуском
+# --force-recreate → пересоздать контейнеры даже без изменений
+# --remove-orphans → подчистить лишние контейнеры, не описанные в docker-test.yml
+# --no-deps (опционально) → если хочешь запускать только client, без зависимостей
+
+# docker compose -f dev.yml --profile client down && docker compose -f dev.yml --profile client up -d
+# docker compose -f dev.yml --profile client down && docker compose -f dev.yml --profile client up -d --build
+
+# Полная пересборка с игнорированием кэша
+# docker compose -f dev.yml --profile client down && docker compose -f dev.yml --profile client build --no-cache && docker compose -f dev.yml --profile client up -d --force-recreate
+
+# Удалит остановленные контейнеры
+# Удалит неиспользуемые образы
+# Удалит неиспользуемые сети
+# Оставит все тома нетронутыми, если добавить --volumes → удалит
+# docker system prune -a -f
+
+networks:
+  development:
+#     name: database_db_network
+#     external: true
+
+services:
+  nginx:
+    build:
+      context: ./docker/nginx
+      dockerfile: dev.Dockerfile
+    container_name: nginx
+    volumes:
+      - ./src:/var/www
+      - ./docker/nginx/logs:/var/log/nginx
+    environment:
+      - TZ=Europe/Moscow
+    restart: always
+    ports:
+      - 0.0.0.0:80:80
+    depends_on:
+      - php
+    profiles: 
+      - client
+    networks:
+      - development
+
+  php:
+    build:
+      context: ./docker/php
+      dockerfile: dev.Dockerfile
+    container_name: php
+   # devices:
+    ###- "/dev/ttyUSB5:/dev/ttyUSB5"
+    volumes:
+      - ./src:/var/www
+    environment:
+      - TZ=Europe/Moscow
+      - COMPOSER_MEMORY_LIMIT=-1
+      - HOME=/tmp # Для Composer
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    restart: always
+    profiles: 
+      - client
+    networks:
+      - development

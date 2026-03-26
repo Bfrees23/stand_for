@@ -1,0 +1,12 @@
+#-------------------------
+# Environment Files
+#-------------------------
+.env
+
+docker/nginx/logs/*
+!docker/nginx/logs/.gitkeep
+
+docker/promtail/data/*
+!docker/promtail/data/.gitkeep
+
+старые скрипты/
